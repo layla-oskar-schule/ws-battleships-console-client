@@ -1,5 +1,4 @@
 ﻿using Lib.Constants;
-using Newtonsoft.Json;
 using Server.Game.Entities;
 
 namespace ConsoleClient.ConsoleHelper
