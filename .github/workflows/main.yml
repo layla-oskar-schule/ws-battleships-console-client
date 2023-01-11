@@ -22,7 +22,7 @@ jobs:
       run: cd ConsoleClient && dotnet restore
     # Building the Project with current tag version and Release configuration
     - name: Build
-      run: cd ConsoleClient && dotnet build -p:${{ github.ref_name }} --configuration Release --no-restore
+      run: cd ConsoleClient && dotnet build -p:${{ github.ref_name }:1} --configuration Release --no-restore
     # Running all tests
     - name: Test
       run: cd ConsoleClient && dotnet test --no-build --verbosity normal
