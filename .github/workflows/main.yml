@@ -22,9 +22,8 @@ jobs:
     needs: get-tag-version
 
     steps:
-    - name: get-version
-      id: get-version
-      run: echo "PROJ_VERSION=${{ steps.get-tag-version.outputs.version }}" >> $GITHUB_ENV
+    - name: get version
+      run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
     - uses: actions/checkout@v3
     # Setup .Net
     - name: Setup .NET
@@ -54,9 +53,8 @@ jobs:
     needs: get-tag-version
     
     steps:
-    - name: get-version
-      id: get-version      
-      run: echo "PROJ_VERSION=${{ steps.get-tag-version.outputs.version }}" >> $GITHUB_ENV
+    - name: get version
+      run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
     - uses: actions/checkout@v3
     # Setup .Net
     - name: Setup .NET
