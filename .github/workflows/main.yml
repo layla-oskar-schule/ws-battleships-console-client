@@ -25,7 +25,7 @@ jobs:
       run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
     # Building the Project with current tag version and Release configuration
     - name: Build
-      run: cd ConsoleClient && dotnet build -p:${{ PROJ_VERSION }} --configuration Release --no-restore
+      run: cd ConsoleClient && dotnet build -p:${{ env.PROJ_VERSION }} --configuration Release --no-restore
     # Running all tests
     - name: Test
       run: cd ConsoleClient && dotnet test --no-build --verbosity normal
