@@ -1,0 +1,38 @@
+name: "tagged-release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+    - uses: actions/checkout@v3
+    # Setup .Net
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    # Restoring all dependencies
+    - name: Restore dependencies
+      run: cd ConsoleClient && dotnet restore
+    # Building the Project with current tag version and Release configuration
+    - name: Build
+      run: cd ConsoleClient && dotnet build -p:${{ github.ref_name }} --configuration Release --no-restore
+    # Running all tests
+    - name: Test
+      run: cd ConsoleClient && dotnet test --no-build --verbosity normal
+
+    # Create the release
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        files: |
+          ConsoleClient/bin/Release/net6.0/*.dll
+          ConsoleClient/bin/Release/net6.0/*.exe
+          ConsoleClient/bin/Release/net6.0/*.json
