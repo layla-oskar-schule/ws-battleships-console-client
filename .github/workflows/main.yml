@@ -6,8 +6,17 @@ on:
       - "v*"
 
 jobs:
-  tagged-release:
-    name: "Tagged Release"
+
+  get-tag-version:
+    name: Getting Version
+    runs-on: "ubuntu-latest"
+    # Appending the tag version to the github env
+    steps:
+      - run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
+      
+
+  linux-x64:
+    name: "linux-x64"
     runs-on: "ubuntu-latest"
 
     steps:
@@ -17,32 +26,67 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-    # Restoring all dependencies
-    - name: Restore dependencies
-      run: dotnet restore ConsoleClient
-    # Runing tests
-    - name: Test
+    # Restoring dependencies for linux-x64
+    - name: restore 
+      run: dotnet restore ConsoleClient --runtime linux-x64
+    # Runing tests for linux
+    - name: test
       run: dotnet test ConsoleClient --no-build --verbosity normal
-    # Appending the tag version to the github env
-    - name: Getting Version
-      run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
-      
-    # Building the Project with current tag version and Release configuration
-    - name: Build linux-x64
-      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime ubuntu.18.04-x64 --configuration Release --no-restore --self-contained
-    - name: Build Windows-x86
-      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime win-x86 --configuration Release --no-restore --self-contained
-    
-    # Packaging all versions
-    - name: Package linux-x64
+    # Build linux-x64
+    - name: build
+      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime linux-x64 --configuration Release --no-restore --self-contained
+    - name: package
       run: zip -r linux-x64.zip ConsoleClient/bin/Release/net6.0/linux-x64
-    - name: Package windows-x86
+    - name: upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: linux-x64
+        path: linux-x64.zip
+    
+  win-x86:
+    name: "win-x86"
+    runs-on: "ubuntu-latest"
+
+    steps:
+    - uses: actions/checkout@v3
+    # Setup .Net
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    # Restoring dependencies for win-x86
+    - name: restore 
+      run: dotnet restore ConsoleClient --runtime win-x86
+    # Runing tests for linux
+    - name: test
+      run: dotnet test ConsoleClient --no-build --verbosity normal
+    # Build win-x86
+    - name: build
+      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime win-x86 --configuration Release --no-restore --self-contained
+    - name: package
       run: zip -r win-x86.zip ConsoleClient/bin/Release/net6.0/win-x86
+    - name: upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: win-x86
+        path: win-x86.zip
       
+  create-tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+    - uses: actions/checkout@v3
+ 
+    - name: download artifacts
+      uses: actions/download-artifact@v3
+      with: 
+        path: artifacts
+ 
     # Create the release
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: |
-          *.zip
+          artifacts/**/*.zip
