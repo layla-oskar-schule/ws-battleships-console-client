@@ -29,9 +29,9 @@ jobs:
       
     # Building the Project with current tag version and Release configuration
     - name: Build linux-x64
-      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime ubuntu.18.04-x64 --configuration Release --no-restore
+      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime ubuntu.18.04-x64 --configuration Release --no-restore --self-contained
     - name: Build Windows-x86
-      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime win-x86 --configuration Release --no-restore
+      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime win-x86 --configuration Release --no-restore --self-contained
     
     # Packaging all versions
     - name: Package linux-x64
