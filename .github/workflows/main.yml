@@ -19,23 +19,30 @@ jobs:
         dotnet-version: 6.0.x
     # Restoring all dependencies
     - name: Restore dependencies
-      run: cd ConsoleClient && dotnet restore
+      run: dotnet restore ConsoleClient
+    # Runing tests
+    - name: Test
+      run: dotnet test ConsoleClient --no-build --verbosity normal
     # Appending the tag version to the github env
     - name: Getting Version
       run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
+      
     # Building the Project with current tag version and Release configuration
-    - name: Build
-      run: cd ConsoleClient && dotnet build -p:Version=${{ env.PROJ_VERSION }} --configuration Release --no-restore
-    # Running all tests
-    - name: Test
-      run: cd ConsoleClient && dotnet test --no-build --verbosity normal
-
+    - name: Build linux-x64
+      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime ubuntu.18.04-x64 --configuration Release --no-restore
+    - name: Build Windows-x86
+      run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime win-x86 --configuration Release --no-restore
+    
+    # Packaging all versions
+    - name: Package linux-x64
+      run: zip -r linux-x64.zip ConsoleClient/bin/Release/net6.0/linux-x64
+    - name: Package windows-x86
+      run: zip -r win-x86.zip ConsoleClient/bin/Release/net6.0/win-x86
+      
     # Create the release
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: |
-          ConsoleClient/bin/Release/net6.0/*.dll
-          ConsoleClient/bin/Release/net6.0/*.exe
-          ConsoleClient/bin/Release/net6.0/*.json
+          *.zip
