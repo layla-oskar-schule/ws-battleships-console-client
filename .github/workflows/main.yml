@@ -30,7 +30,7 @@ jobs:
         run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime linux-x64 --configuration Release --no-restore --self-contained
       # Create folder and bring output in correct format
       - name: organize
-        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/linux-x64/* .
+        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/linux-x64/* out/ConsoleClient
       - name: package
         run: cd out && zip -r linux-x64.zip ConsoleClient/*
       - name: upload artifact
@@ -63,7 +63,7 @@ jobs:
         run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime win-x86 --configuration Release --no-restore --self-contained
       # Create folder and bring output in correct format
       - name: organize
-        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/win-x86/* .
+        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/win-x86/* out/ConsoleClient
       - name: package
         run: cd out && zip -r win-x86.zip ConsoleClient/*
       - name: upload artifact
@@ -96,7 +96,7 @@ jobs:
         run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime osx-x64 --configuration Release --no-restore --self-contained
       # Create folder and bring output in correct format
       - name: organize
-        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/osx-x64/* .
+        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/osx-x64/* out/ConsoleClient
       - name: package
         run: cd out && zip -r osx-x64.zip ConsoleClient/*
       - name: upload artifact
