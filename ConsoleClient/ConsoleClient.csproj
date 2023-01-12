@@ -27,16 +27,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="ws-battleships.Lib" Version="1.0.2" />
   </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Config.Dev.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Config.Dev.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\Config.Prod.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Config.Prod.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
 </Project>
