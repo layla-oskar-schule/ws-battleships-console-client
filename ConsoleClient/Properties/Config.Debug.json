@@ -1,4 +1,4 @@
 {
     "type": "Debug",
-    "apiUrl":  "ws://localhost:5083"
+    "apiUrl":  "ws://localhost:5083/game"
 }
