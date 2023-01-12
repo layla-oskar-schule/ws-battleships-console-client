@@ -11,7 +11,7 @@
 ### File format
 *replace \<RID\> with your chosen rid*
   
-```md
+```yml
 <RID>:
     name: "<RID>"
     runs-on: "ubuntu-latest"
