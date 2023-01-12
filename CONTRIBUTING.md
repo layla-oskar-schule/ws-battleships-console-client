@@ -30,7 +30,7 @@
         run: dotnet restore ConsoleClient --runtime <RID>
       # Running tests for <RID>
       - name: test
-        run: dotnet test ConsoleClient --no-build --verbosity normal --runtime linux-x64
+        run: dotnet test ConsoleClient --no-build --verbosity normal --runtime <RID>
       # Build <RID>
       - name: build
         run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime <RID> --configuration Release --no-restore --self-contained
