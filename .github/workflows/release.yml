@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 7.0.x
       # Restoring dependencies for linux-x64
       - name: restore
         run: dotnet restore ConsoleClient --runtime linux-x64
@@ -51,7 +51,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 7.0.x
       # Restoring dependencies for win-x86
       - name: restore
         run: dotnet restore ConsoleClient --runtime win-x86
@@ -84,7 +84,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 7.0.x
       # Restoring dependencies for osx-x64
       - name: restore
         run: dotnet restore ConsoleClient --runtime osx-x64
