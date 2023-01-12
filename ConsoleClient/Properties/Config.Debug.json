@@ -1,0 +1,4 @@
+{
+    "type": "Debug",
+    "apiUrl":  "ws://localhost:5083"
+}
