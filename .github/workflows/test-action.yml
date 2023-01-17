@@ -10,7 +10,7 @@ jobs:
     
     steps:
       - name: get version
-        run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
+        run: echo "PROJ_VERSION=2.0.0" >> $GITHUB_ENV
       - id: build-osx64
         uses: devskar/build-dotnet@v1
         with:
