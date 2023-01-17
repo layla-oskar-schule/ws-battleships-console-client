@@ -12,7 +12,7 @@ jobs:
       - name: get version
         run: echo "PROJ_VERSION=2.0.0" >> $GITHUB_ENV
       - id: build-osx64
-        uses: devskar/build-dotnet@v1
+        uses: devskar/build-dotnet@v1.1
         with:
           name: 'ConsoleClient'
           runtime: osx-x64
