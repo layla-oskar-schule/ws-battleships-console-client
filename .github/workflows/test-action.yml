@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: get version
         run: echo "PROJ_VERSION=2.0.0" >> $GITHUB_ENV
+      - name: ls before
+        run: ls
       - id: build-osx64
         uses: devskar/build-dotnet@v1.1
         with:
@@ -19,5 +21,9 @@ jobs:
           version: ${{ env.PROJ_VERSION }}
           build-args: --self-contained
           dotnet-version: '7.0'
-      - name: ls
-        run: ls && ls build && echo ${{ steps.build-osx64.outputs.build-path }}
+      - name: ls after
+        run: ls 
+      - name: ls build
+        run: ls build
+      - name: check path
+        run: echo ${{ steps.build-osx64.outputs.build-path }}
