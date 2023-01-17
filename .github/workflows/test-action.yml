@@ -1,0 +1,22 @@
+name: "test for action"
+on:
+  push:
+    branches: [ "test" ]
+  
+jobs:
+  test:
+    name: test-action
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: get version
+        run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
+      - id: build-osx64
+        uses: devskar/build-dotnet@v1
+        with:
+          name: 'ConsoleClient'
+          runtime: osx-x64
+          version: ${{ env.PROJ_VERSION }}
+          build-args: --self-contained
+      - name: ls
+        run: ls && ls build && echo ${{ steps.build-osx64.outputs.build-path }}
