@@ -18,5 +18,6 @@ jobs:
           runtime: osx-x64
           version: ${{ env.PROJ_VERSION }}
           build-args: --self-contained
+          net-version: 7.0
       - name: ls
         run: ls && ls build && echo ${{ steps.build-osx64.outputs.build-path }}
