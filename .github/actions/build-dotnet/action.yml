@@ -34,6 +34,9 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: ls
+      run: ls
+      shell: bash
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
