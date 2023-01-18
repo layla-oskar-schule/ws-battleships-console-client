@@ -4,8 +4,7 @@ description: 'Github action to build a dotnet app and receive the build output a
 inputs:
   name:
     description: Name of the project
-    required: false
-    default: ''
+    required: true
   runtime:
     description: 'The rdi for the build'
     required: true
@@ -61,7 +60,7 @@ runs:
         --runtime ${{ inputs.runtime }}
         --configuration ${{ inputs.configuration }}
         --no-restore
-        --output ./${{ inputs.build-output-path}}/${{ inputs.runtime }}/
+        --output ./${{ inputs.build-output-path }}/${{ inputs.runtime }}/
         ${{ inputs.build-args }}
     - name: ls
       run: ls ${{ inputs.build-output-path }}
@@ -71,7 +70,7 @@ runs:
       shell: bash
     - name: package
       shell: bash
-      run: cd ${{ inputs.build-output-path }} && zip -r ${{ inputs.runtime }}.zip ${{ inputs.runtime }}/*
+      run: cd ${{ inputs.build-output-path }} && zip -r ${{ inputs.name }}-${{ inputs.runtime }}.zip ${{ inputs.runtime }}/*
     - id: append-build-path
       run: echo "build-path=$(echo ${{ inputs.build-folder-name }}/${{ inputs.runtime }}.zip)" >> $GITHUB_OUTPUT
       shell: bash
