@@ -66,6 +66,12 @@ runs:
         --no-restore
         --output ./${{ inputs.build-output-path}}/${{ inputs.runtime }}/
         ${{ inputs.build-args }}
+    - name: ls
+      run: ls ${{ inputs.build-output-path }}
+      shell: bash
+    - name: ls 2
+      run: ls ${{ inputs.build-output-path }}/${{ inputs.runtime }}/
+      shell: bash
     - name: package
       shell: bash
       run: cd ${{ inputs.build-folder-name }} && zip -r ${{ inputs.runtime }}.zip ${{ inputs.runtime }}/*
