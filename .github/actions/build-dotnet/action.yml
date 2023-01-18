@@ -64,12 +64,8 @@ runs:
         --runtime ${{ inputs.runtime }}
         --configuration ${{ inputs.configuration }}
         --no-restore
-        --output ./${{ inputs.build-folder-name}}
+        --output ./${{ inputs.build-output-path}}/${{ inputs.runtime }}/
         ${{ inputs.build-args }}
-    # Create folder and bring output in correct format
-    - name: organize
-      shell: bash
-      run: mkdir -p ${{ inputs.build-folder-name }}/${{ inputs.runtime }} && cp ${{ inputs.name }}/bin/${{ inputs.configuration }}/net${{ inputs.dotnet-version }}/${{ inputs.runtime }}/* ${{ inputs.build-folder-name }}/${{ inputs.runtime }}
     - name: package
       shell: bash
       run: cd ${{ inputs.build-folder-name }} && zip -r ${{ inputs.runtime }}.zip ${{ inputs.runtime }}/*
