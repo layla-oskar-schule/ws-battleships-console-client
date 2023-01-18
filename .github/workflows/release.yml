@@ -6,122 +6,42 @@ on:
       - "v*"
 
 jobs:
-  linux-x64:
-    name: "linux-x64"
+  create-release:
+    name: "create release"
     runs-on: "ubuntu-latest"
 
     steps:
       - name: get version
         run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
       - uses: actions/checkout@v3
-      # Setup .Net
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: build-osx64
+        uses: ./.github/actions/build-dotnet
         with:
-          dotnet-version: 7.0.x
-      # Restoring dependencies for linux-x64
-      - name: restore
-        run: dotnet restore ConsoleClient --runtime linux-x64
-      # Running tests for linux-x64
-      - name: test
-        run: dotnet test ConsoleClient --no-build --verbosity normal
-      # Build linux-x64
-      - name: build
-        run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime linux-x64 --configuration Release --no-restore --self-contained
-      # Create folder and bring output in correct format
-      - name: organize
-        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/linux-x64/* out/ConsoleClient
-      - name: package
-        run: cd out && zip -r linux-x64.zip ConsoleClient/*
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
+          name: 'ConsoleClient'
+          runtime: osx-x64
+          version: ${{ env.PROJ_VERSION }}
+          build-args: --self-contained
+          dotnet-version: '7.0'
+      - name: build win-x86
+        uses: ./.github/actions/build-dotnet
         with:
-          name: linux-x64
-          path: out/linux-x64.zip
-
-  win-x86:
-    name: "win-x86"
-    runs-on: "ubuntu-latest"
-
-    steps:
-      - name: get version
-        run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
-      - uses: actions/checkout@v3
-      # Setup .Net
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+          name: 'ConsoleClient'
+          runtime: win-x86
+          version: ${{ env.PROJ_VERSION }}
+          build-args: --self-contained
+          dotnet-version: '7.0'
+      - name: build linux-x64
+        uses: ./.github/actions/build-dotnet
         with:
-          dotnet-version: 7.0.x
-      # Restoring dependencies for win-x86
-      - name: restore
-        run: dotnet restore ConsoleClient --runtime win-x86
-      # Running tests for win-x86
-      - name: test
-        run: dotnet test ConsoleClient --no-build --verbosity normal
-      # Build win-x86
-      - name: build
-        run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime win-x86 --configuration Release --no-restore --self-contained
-      # Create folder and bring output in correct format
-      - name: organize
-        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/win-x86/* out/ConsoleClient
-      - name: package
-        run: cd out && zip -r win-x86.zip ConsoleClient/*
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: win-x86
-          path: out/win-x86.zip
-
-  osx-x64:
-    name: "osx-x64"
-    runs-on: "ubuntu-latest"
-
-    steps:
-      - name: get version
-        run: VERSION=${{ github.ref_name }} && echo "PROJ_VERSION=${VERSION:1}" >> $GITHUB_ENV
-      - uses: actions/checkout@v3
-      # Setup .Net
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 7.0.x
-      # Restoring dependencies for osx-x64
-      - name: restore
-        run: dotnet restore ConsoleClient --runtime osx-x64
-      # Running tests for osx-x64
-      - name: test
-        run: dotnet test ConsoleClient --no-build --verbosity normal
-      # Build osx-x64
-      - name: build
-        run: dotnet build ConsoleClient -p:Version=${{ env.PROJ_VERSION }} --runtime osx-x64 --configuration Release --no-restore --self-contained
-      # Create folder and bring output in correct format
-      - name: organize
-        run: mkdir -p out/ConsoleClient && cp ConsoleClient/bin/Release/net6.0/osx-x64/* out/ConsoleClient
-      - name: package
-        run: cd out && zip -r osx-x64.zip ConsoleClient/*
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: osx-x64
-          path: out/osx-x64.zip
-
-  create-tagged-release:
-    name: "Tagged Release"
-    runs-on: "ubuntu-latest"
-    needs: [linux-x64, win-x86, osx-x64]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: artifacts
-
+          name: 'ConsoleClient'
+          runtime: linux-x64
+          version: ${{ env.PROJ_VERSION }}
+          build-args: --self-contained
+          dotnet-version: '7.0'
       # Create the release
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            artifacts/**/*.zip
+            build/*.zip
