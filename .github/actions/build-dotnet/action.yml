@@ -1,0 +1,75 @@
+name: 'Build dotnet'
+description: 'Github action to build a dotnet app and receive the build output as zip file'
+
+inputs:
+  name:
+    description: Name of the project
+    required: false
+    default: ''
+  runtime:
+    description: 'The rdi for the build'
+    required: true
+  version:
+    description: 'Version for the build'
+    required: false
+  configuration:
+    description: 'Configuration for the build'
+    required: false
+    default: 'Release'
+  dotnet-version:
+    description: '.NET version'
+    required: false
+    default: 7.0.x
+  build-args:
+    description: 'additional build arguments (e.g. --self-contained)'
+    required: false
+  build-output-path:
+    description: 'folder name to contain the build output'
+    required: false
+    default: build
+outputs:
+  build-path:
+    description: Path to the build
+    value: ${{ steps.append-build-path.outputs.build-path }}
+runs:
+  using: composite
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+    # Restoring dependencies
+    - name: restore
+      shell: bash
+      run: >
+        dotnet restore ${{ inputs.name }}
+        --runtime ${{ inputs.runtime }}
+    # Running tests
+    - name: test
+      shell: bash
+      run: >
+        dotnet test ${{ inputs.name }}
+        --no-build
+        --verbosity normal
+    # Build linux-x64
+    - name: build
+      shell: bash
+      run: >
+        dotnet build
+        ${{ inputs.name }}
+        -p:Version=${{ inputs.version }}
+        --runtime ${{ inputs.runtime }}
+        --configuration ${{ inputs.configuration }}
+        --no-restore
+        --output ./${{ inputs.build-folder-name}}
+        ${{ inputs.build-args }}
+    # Create folder and bring output in correct format
+    - name: organize
+      shell: bash
+      run: mkdir -p ${{ inputs.build-folder-name }}/${{ inputs.runtime }} && cp ${{ inputs.name }}/bin/${{ inputs.configuration }}/net${{ inputs.dotnet-version }}/${{ inputs.runtime }}/* ${{ inputs.build-folder-name }}/${{ inputs.runtime }}
+    - name: package
+      shell: bash
+      run: cd ${{ inputs.build-folder-name }} && zip -r ${{ inputs.runtime }}.zip ${{ inputs.runtime }}/*
+    - id: append-build-path
+      run: echo "build-path=$(echo ${{ inputs.build-folder-name }}/${{ inputs.runtime }}.zip)" >> $GITHUB_OUTPUT
+      shell: bash
