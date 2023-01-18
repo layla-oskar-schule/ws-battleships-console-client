@@ -11,10 +11,11 @@ jobs:
     steps:
       - name: get version
         run: echo "PROJ_VERSION=2.0.0" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
       - name: ls before
         run: ls
       - id: build-osx64
-        uses: devskar/build-dotnet@v1.1
+      - uses: ./.github/actions/build-dotnet
         with:
           name: 'ConsoleClient'
           runtime: osx-x64
