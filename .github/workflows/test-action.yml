@@ -15,7 +15,7 @@ jobs:
       - name: ls before
         run: ls
       - id: build-osx64
-      - uses: ./.github/actions/build-dotnet
+        uses: ./.github/actions/build-dotnet
         with:
           name: 'ConsoleClient'
           runtime: osx-x64
