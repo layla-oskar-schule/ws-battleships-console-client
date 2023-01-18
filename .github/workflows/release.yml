@@ -37,6 +37,14 @@ jobs:
           runtime: linux-x64
           version: ${{ env.PROJ_VERSION }}
           build-args: --self-contained
+          dotnet-version: '7.0' 
+      - name: build osx.13-arm64
+        uses: ./.github/actions/build-dotnet
+        with:
+          name: 'ConsoleClient'
+          runtime: osx.13-arm64
+          version: ${{ env.PROJ_VERSION }}
+          build-args: --self-contained
           dotnet-version: '7.0'
       # Create the release
       - uses: "marvinpinto/action-automatic-releases@latest"
