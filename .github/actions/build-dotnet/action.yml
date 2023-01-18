@@ -37,20 +37,20 @@ runs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ inputs.dotnet-version }}
-    # Restoring dependencies
+    # restore
     - name: restore
       shell: bash
       run: >
         dotnet restore ${{ inputs.name }}
         --runtime ${{ inputs.runtime }}
-    # Running tests
+    # test
     - name: test
       shell: bash
       run: >
         dotnet test ${{ inputs.name }}
         --no-build
         --verbosity normal
-    # Build linux-x64
+    # build
     - name: build
       shell: bash
       run: >
@@ -62,6 +62,7 @@ runs:
         --no-restore
         --output ./${{ inputs.build-output-path }}/${{ inputs.runtime }}/
         ${{ inputs.build-args }}
+    # package
     - name: package
       shell: bash
       run: cd ${{ inputs.build-output-path }} && zip -r ${{ inputs.name }}-${{ inputs.runtime }}.zip ${{ inputs.runtime }}/*
