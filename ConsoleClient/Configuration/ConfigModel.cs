@@ -13,5 +13,10 @@ namespace ConsoleClient.Configuration
 
         public string Type { get; set; }
 
+        public ConfigModel(string apiUrl, string type)
+        {
+            ApiUrl = apiUrl;
+            Type = type;
+        }
     }
 }

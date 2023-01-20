@@ -9,7 +9,13 @@ internal class Program
     {
         ConfigManager configManager = new ConfigManager();
         configManager.Load();
-        
+
+        if(configManager.Config == null)
+        {
+            Console.WriteLine("Config failed to load. Exiting...");
+            Environment.Exit(1);
+        }
+
         new Client(configManager.Config.ApiUrl).Start().GetAwaiter().GetResult();
     }
 }
