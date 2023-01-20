@@ -1,4 +1,5 @@
-﻿using Lib.Constants;
+﻿using ConsoleClient.Extensions;
+using Lib.Constants;
 using Lib.Extensions;
 using Lib.GameEntities;
 
@@ -8,53 +9,16 @@ namespace ConsoleClient.ConsoleHelper
     {
         public static Location AskForLocation()
         {
-            return new Location()
+            Console.Write("location: ");
+            string? input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
             {
-                X = AskForX(),
-                Y = AskForY(),
-            };
-        }
-
-        public static char AskForX()
-        {
-            Console.Write($"X ({GameFieldConstants.XBordersAsString}): ");
-
-            string? message = Console.ReadLine();
-
-            if (String.IsNullOrWhiteSpace(message))
-            {
-                Console.WriteLine("Invalid Input!");
-                return AskForX();
-            }
-            char x = message.ToCharArray()[0];
-
-            if (x.AsInt() < 1 || x.AsInt() > GameFieldConstants.Size)
-            {
-                Console.WriteLine("X is not in the correct range!");
-                return AskForX();
-            }
-            return x;
-        }
-
-        public static int AskForY()
-        {
-            Console.Write($"Y ({GameFieldConstants.YBordersAsString}): ");
-
-            bool success = int.TryParse(Console.ReadLine(), out int y);
-
-            if (!success)
-            {
-                Console.WriteLine("Failed to parse y!");
-                return AskForY();
+                Console.WriteLine("Invalid input!");
+                return AskForLocation();
             }
 
-            if (y < 1 || y > GameFieldConstants.Size)
-            {
-                Console.WriteLine("Y is not in the correct range!");
-                return AskForY();
-            }
-
-            return y;
+            return input.ParseLocation();
         }
     }
 }
